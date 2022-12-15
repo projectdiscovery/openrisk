@@ -12,7 +12,7 @@ go install -v github.com/projectdiscovery/openrisk
 ### Usage
 
 ```sh
-openrisk
+openrisk -h
 ```
 
 ```console
