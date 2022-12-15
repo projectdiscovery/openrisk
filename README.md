@@ -33,6 +33,7 @@ ____  ____  ___  ____  _____(_)____/ /__
 ### Generating risk score
 
 ```sh
+export OPENAI_API_KEY=<OPENAI_API_KEY>
 openrisk -i nuclei_scan_result.txt
 ```
 
