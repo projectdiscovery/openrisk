@@ -50,7 +50,6 @@ func main() {
 }
 
 func getCompletion(prompt string) string {
-	fmt.Println(prompt)
 	var apiKey = os.Getenv("OPENAI_API_KEY")
 	c := gogpt.NewClient(apiKey)
 	ctx := context.Background()
