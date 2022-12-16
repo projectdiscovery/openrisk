@@ -51,6 +51,10 @@ func main() {
 
 func getCompletion(prompt string) string {
 	var apiKey = os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		gologger.Error().Msgf("Envirment variable OPENAI_API_KEY is not set.")
+		os.Exit(1)
+	}
 	c := gogpt.NewClient(apiKey)
 	ctx := context.Background()
 
