@@ -3,6 +3,12 @@ module github.com/projectdiscovery/openrisk
 go 1.18
 
 require (
+	github.com/davecgh/go-spew v1.1.1
+	github.com/projectdiscovery/gologger v1.1.5
+	github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad
+)
+
+require (
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -12,9 +18,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
 	github.com/pierrec/lz4 v2.6.0+incompatible // indirect
-	github.com/pkg/errors v0.9.1 // indirect
-	github.com/projectdiscovery/gologger v1.1.5 // indirect
-	github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad // indirect
 	github.com/ulikunitz/xz v0.5.7 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	gopkg.in/djherbis/times.v1 v1.3.0 // indirect
