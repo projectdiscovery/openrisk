@@ -1,4 +1,7 @@
 # openrisk
+
+`NOTE: This is an experimental program released by the PD Research Team. As such, it may not meet the same code quality standards as our other projects and may not be as well-tested--please fix bugs or open new issues!`
+
 openrisk is a tool that generates a risk score based on the results of a Nuclei scan. 
 
 
