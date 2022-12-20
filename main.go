@@ -8,7 +8,6 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"unicode/utf8"
 
 	"github.com/projectdiscovery/gologger"
 	gogpt "github.com/sashabaranov/go-gpt3"
@@ -28,9 +27,9 @@ func printBanner() {
 	gologger.Print().Msgf("\t\tprojectdiscovery.io\n\n")
 }
 
-const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. Theformat of the CSV is 'finding,protocol,severity,url'"
+const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,protocol,severity'"
 
-var input = flag.String("i", "", "Nuclei scan result file path")
+var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
 
 func main() {
 	printBanner()
@@ -41,50 +40,64 @@ func main() {
 		return
 	}
 
+	files, isValidPath := getFiles(*input)
+	if !isValidPath {
+		flag.PrintDefaults()
+		return
+	}
+
+	issues := readFiles(files)
+	issues = reduceTokens(issues)
+	var prompt = buildPrompt(issues)
+	var completion = getCompletion(prompt)
+	gologger.Info().Label("RISK SCORE").Msg(completion)
+}
+
+func getFiles(input string) ([]string, bool) {
 	var files []string
 
-	// Check if the file is a directory
-	filedetails, _ := os.Stat(*input)
+	filedetails, err := os.Stat(input)
+	if err != nil {
+		gologger.Error().Msgf("Invalid filename or directory.", err)
+		return nil, false
+	}
+
 	if filedetails.IsDir() {
-		dir, err := os.Open(*input)
+		dir, err := os.Open(input)
 		if err != nil {
 			gologger.Error().Msgf("Could not read the directory.", err)
-			return
+			return nil, false
 		}
 		fileInfos, _ := dir.Readdir(-1)
 		for _, fileInfo := range fileInfos {
-			files = append(files, *input+"/"+fileInfo.Name())
+			files = append(files, input+"/"+fileInfo.Name())
 		}
 		defer dir.Close()
 
 	} else {
-		files = append(files, *input)
+		files = append(files, input)
 	}
+	return files, true
+}
 
-	var finalIssues string
+func readFiles(files []string) string {
+	var issues string
 	for _, file := range files {
-		// fmt.Print("* ", file, "\n")
 		nucleiScanResult, err := os.ReadFile(file)
 		if err != nil {
 			gologger.Error().Msgf("Could not read the nuclei scan result.", err)
 			continue
 		}
-		// Check if the file is a markdown file
+
 		if strings.HasSuffix(file, ".md") {
-			finalIssues += parseMD(nucleiScanResult)
+			issues += parseMD(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".txt") {
-			finalIssues += string(nucleiScanResult)
+			issues += string(nucleiScanResult)
 		} else {
 			gologger.Error().Msgf("Unknown file type (txt or md only): ", file)
 		}
 	}
-
-	finalIssues = reduceTokens(finalIssues)
-	fmt.Print(finalIssues)
-	var prompt = buildPrompt(finalIssues)
-	var completion = getCompletion(prompt)
-	gologger.Info().Label("RISK SCORE").Msg(completion)
-
+	return issues
 }
 
 func getCompletion(prompt string) string {
@@ -122,24 +135,21 @@ func buildPrompt(nucleiScanResult string) string {
 	return sb.String()
 }
 
-func reduceTokens(input string) string {
+func reduceTokens(issues string) string {
 	var sb strings.Builder
-	findingRegex := regexp.MustCompile(`^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\] `)
+	dateRegex := regexp.MustCompile(`^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\] `)
+	urlRegex := regexp.MustCompile(`(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)`)
 	csvRegex := regexp.MustCompile(`\] \[?`)
-	scanner := bufio.NewScanner(strings.NewReader(input))
+	scanner := bufio.NewScanner(strings.NewReader(issues))
 	for scanner.Scan() {
 		line := scanner.Text()
-		// Only keep findings lines that start with a date
-		if findingRegex.MatchString(line) {
-			// Remove the date
-			line = findingRegex.ReplaceAllString(line, "")
-			// Make it CSV
-			line = csvRegex.ReplaceAllString(line, ",")
-			// Leftover leading [
-			line = trimFirstRune(line)
-			sb.WriteString(line)
-			sb.WriteString("\n")
-		}
+		line = dateRegex.ReplaceAllString(line, "")
+		line = urlRegex.ReplaceAllString(line, "")
+		// Make it CSV
+		line = csvRegex.ReplaceAllString(line, ",")
+		line = strings.Trim(line, "[],")
+		sb.WriteString(line)
+		sb.WriteString("\n")
 	}
 	return sb.String()
 }
@@ -177,12 +187,5 @@ func parseMD(nucleiScanResult []byte) string {
 			continue
 		}
 	}
-	return (results["details"] + "," + results["**Protocol**"] + "," + results["severity"] + "," + results["**Full URL**"] + "\n")
-}
-
-// trimFirstRune removes the first rune from a string.
-// https://stackoverflow.com/questions/48798588/how-do-you-remove-the-first-character-of-a-string
-func trimFirstRune(s string) string {
-	_, i := utf8.DecodeRuneInString(s)
-	return s[i:]
+	return (results["details"] + "," + results["**Protocol**"] + "," + results["severity"] + "\n")
 }
