@@ -1,9 +1,9 @@
 # openrisk
 
-`NOTE: This is an experimental program released by the PD Research Team. As such, it may not meet the same code quality standards as our other projects and may not be as well-tested--please fix bugs or open new issues!`
+openrisk is a tool that generates a risk score based on the results of a Nuclei scan against a single target. 
 
-openrisk is a tool that generates a risk score based on the results of a Nuclei scan. 
 
+> NOTE: This is an experimental program released by the ProjectDiscovery Research Team. As such, it may not meet the same code quality standards as our other projects, and may not be as well-tested. We welcome input, ideas, and bug fixes!
 
 # Install openrisk
 openrisk requires **go1.18** to install successfully. Run the following command to install the latest version -
@@ -42,6 +42,4 @@ openrisk -i nuclei_scan_result.txt
 
 Example output:
 
-```console
-The 10-scale risk score for the given Nuclei scan result is 10. This is because all of the vulnerabilities listed are rated as either critical or high, which are the two highest risk levels.
-```
+> The 10-scale risk score for the given Nuclei scan result is 10. This is because all of the vulnerabilities listed are rated as either critical or high, which are the two highest risk levels.
