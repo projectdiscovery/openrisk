@@ -101,14 +101,26 @@ func readFiles(files []string) string {
 }
 
 func getCompletion(prompt string) string {
-	var apiKey = os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		gologger.Error().Msgf("Envirment variable OPENAI_API_KEY is not set.")
+	apiKey := getApiKey()
+	c := newClientBuilder().
+		apiKey(apiKey).
+		build()
+
+	req := buildRequest(prompt)
+	resp := makeRequest(c, req)
+	return strings.TrimSpace(resp.Choices[0].Text)
+}
+
+func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionResponse {
+	resp, err := c.CreateCompletion(context.Background(), req)
+	if err != nil {
+		gologger.Error().Msgf("An error occurred while getting the completion.", err)
 		os.Exit(1)
 	}
-	c := gogpt.NewClient(apiKey)
-	ctx := context.Background()
+	return resp
+}
 
+func buildRequest(prompt string) gogpt.CompletionRequest {
 	req := gogpt.CompletionRequest{
 		Model:            "text-davinci-003",
 		Temperature:      0.01, // FIXME: https://github.com/sashabaranov/go-gpt3/issues/9
@@ -119,12 +131,16 @@ func getCompletion(prompt string) string {
 		MaxTokens:        256,
 		Prompt:           prompt,
 	}
-	resp, err := c.CreateCompletion(ctx, req)
-	if err != nil {
-		gologger.Error().Msgf("An error occurred while getting the completion.", err)
-		return ""
+	return req
+}
+
+func getApiKey() string {
+	var apiKey = os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		gologger.Error().Msgf("Envirment variable OPENAI_API_KEY is not set.")
+		os.Exit(1)
 	}
-	return strings.TrimSpace(resp.Choices[0].Text)
+	return apiKey
 }
 
 func buildPrompt(nucleiScanResult string) string {
