@@ -1,6 +1,6 @@
 # openrisk
 
-openrisk, nuclei çıktısını (text ve markdown) okuyan ve OpenAI'nin GPT-3 modelini kullanarak sağlanan host için bir risk puanı oluşturan deneysel bir araçtır. Şimdilik, tek seferde tek bir host -a karşı çalışması amaçlanıyor.
+openrisk, nuclei çıktısını (text ve markdown) okuyan ve OpenAI'nin GPT-3 modelini kullanarak host için bir risk puanı oluşturan deneysel bir araçtır. Şimdilik, tek seferde tek bir host -a karşı çalışması amaçlanıyor.
 
 > NOT: Bu, ProjectDiscovery Araştırma Ekibi tarafından yayınlanan deneysel bir programdır. Bu nedenle, diğer projelerimizle aynı kod kalite standartlarını karşılamayabilir ve iyi test edilmemiş olabilir. Önerilere, hata düzeltmelerine ve bu deneyleri diğer araçlarımıza entegre etmeye yönelik fikirlere açığız!
 
