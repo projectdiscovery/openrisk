@@ -1,6 +1,6 @@
 # openrisk
 
-openrisk is an experimental tool which reads nuclei output (text and markdown) and generates a risk score for the host using OpenAI's GPT3 model. It is intended, for now, to work against a single target at a time.
+openrisk is an experimental tool which reads nuclei output (text and markdown) and generates a risk score for the host using OpenAI's GPT-3 model. It is intended, for now, to work against a single target at a time.
 
 > NOTE: This is an experimental program released by the ProjectDiscovery Research Team. As such, it may not meet the same code quality standards as our other projects, and may not be as well-tested. We welcome suggestions, bug fixes, and ideas on integrating these experiments into our other tools!
 
