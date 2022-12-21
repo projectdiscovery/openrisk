@@ -27,7 +27,7 @@ func printBanner() {
 	gologger.Print().Msgf("\t\tprojectdiscovery.io\n\n")
 }
 
-const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,protocol,severity'"
+const Question = "Calculate the 10-scale risk score for the following Nuclei scan results, with critical=10,high=7,medium=5,low=3. The format of the CSV is 'finding,severity'. Always add 'because' with a one-line explanation."
 
 var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
 
@@ -46,13 +46,14 @@ func main() {
 		return
 	}
 
-	issues := readFiles(files)
+	var issues = readFiles(files)
 	issues = reduceTokens(issues)
 	var prompt = buildPrompt(issues)
 	var completion = getCompletion(prompt)
 	gologger.Info().Label("RISK SCORE").Msg(completion)
 }
 
+// getFiles: returns a list of files in the given directory or the file itself
 func getFiles(input string) ([]string, bool) {
 	var files []string
 
@@ -80,6 +81,7 @@ func getFiles(input string) ([]string, bool) {
 	return files, true
 }
 
+// readFiles: reads the file(s) and returns the issues
 func readFiles(files []string) string {
 	var issues string
 	for _, file := range files {
@@ -100,6 +102,7 @@ func readFiles(files []string) string {
 	return issues
 }
 
+// getCompletion: returns the details from OpenAI
 func getCompletion(prompt string) string {
 	apiKey := getApiKey()
 	c := newClientBuilder().
@@ -111,6 +114,7 @@ func getCompletion(prompt string) string {
 	return strings.TrimSpace(resp.Choices[0].Text)
 }
 
+// makeRequest: makes the request to OpenAI
 func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionResponse {
 	resp, err := c.CreateCompletion(context.Background(), req)
 	if err != nil {
@@ -120,6 +124,7 @@ func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionRe
 	return resp
 }
 
+// buildRequest: builds the structured request to OpenAI
 func buildRequest(prompt string) gogpt.CompletionRequest {
 	req := gogpt.CompletionRequest{
 		Model:            "text-davinci-003",
@@ -134,6 +139,7 @@ func buildRequest(prompt string) gogpt.CompletionRequest {
 	return req
 }
 
+// getApiKey: returns the API key from the OPENAI_API_KEY environment variable
 func getApiKey() string {
 	var apiKey = os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
@@ -143,6 +149,7 @@ func getApiKey() string {
 	return apiKey
 }
 
+// buildPrompt: builds the prompt for OpenAI
 func buildPrompt(nucleiScanResult string) string {
 	var sb strings.Builder
 	sb.WriteString(Question)
@@ -151,6 +158,7 @@ func buildPrompt(nucleiScanResult string) string {
 	return sb.String()
 }
 
+// reduceTokens: reduces the number of tokens sent to OpenAI
 func reduceTokens(issues string) string {
 	var sb strings.Builder
 	dateRegex := regexp.MustCompile(`^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\] `)
@@ -159,8 +167,15 @@ func reduceTokens(issues string) string {
 	scanner := bufio.NewScanner(strings.NewReader(issues))
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		// Skip info lines as they don't impact the score
+		if strings.HasSuffix(line, "info") {
+			continue
+		}
+
 		line = dateRegex.ReplaceAllString(line, "")
 		line = urlRegex.ReplaceAllString(line, "")
+
 		// Make it CSV
 		line = csvRegex.ReplaceAllString(line, ",")
 		line = strings.Trim(line, "[],")
@@ -170,27 +185,17 @@ func reduceTokens(issues string) string {
 	return sb.String()
 }
 
+// parseMD: parses the nuclei scan result in markdown format
 func parseMD(nucleiScanResult []byte) string {
 	rName := regexp.MustCompile(`^\| Name \|\s*(.*)\s*\|$`)
 	rSev := regexp.MustCompile(`^\| Severity \|\s*(.*)\s*\|$`)
 	results := make(map[string]string)
-	results["details"] = "??"
+	results["details"] = ""
 	results["severity"] = "unknown"
 
 	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
 	for scanner.Scan() {
 		line := scanner.Text()
-
-		// If the line starts with "**", it is an easy key-value pair
-		if strings.HasPrefix(line, "**") {
-			pair := strings.Split(line, ":")
-			if len(pair) < 2 {
-				continue
-			}
-			results[pair[0]] = strings.TrimSpace(strings.Join(pair[1:], ":"))
-		}
-
-		// Otherwise get the specific values from the table
 		mName := rName.FindStringSubmatch(line)
 		if len(mName) > 0 {
 			results["details"] = strings.TrimSpace(mName[1])
@@ -202,6 +207,11 @@ func parseMD(nucleiScanResult []byte) string {
 			results["severity"] = strings.TrimSpace(mSev[1])
 			continue
 		}
+
+		if mSev != nil && mName != nil {
+			break
+		}
 	}
-	return (results["details"] + "," + results["**Protocol**"] + "," + results["severity"] + "\n")
+
+	return (results["details"] + "," + results["severity"] + "\n")
 }
