@@ -26,7 +26,7 @@ func printBanner() {
 	gologger.Print().Msgf("\t\tprojectdiscovery.io\n\n")
 }
 
-const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'"
+const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
 
 var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
 
@@ -163,23 +163,42 @@ func reduceTokens(issues string) string {
 	dateRegex := regexp.MustCompile(`^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\] `)
 	urlRegex := regexp.MustCompile(`(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)`)
 	csvRegex := regexp.MustCompile(`\] \[?`)
+	skipTxtRegex := regexp.MustCompile(`^(\[[^\d]|\s|\/)`)
+	txtLine := regexp.MustCompile("^.*,.*,")
 	scanner := bufio.NewScanner(strings.NewReader(issues))
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Skip info/unknown lines as they don't impact the score
+		// Skip info/unknown lines as they don't impact the score (md)
 		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
 			continue
 		}
 
+		// Skip lines that start with space, \, or [ but not [YYYY-MM-DD HH:MM:SS] (txt)
+		if skipTxtRegex.MatchString(line) {
+			continue
+		}
+
+		// Remove the date and URL
 		line = dateRegex.ReplaceAllString(line, "")
 		line = urlRegex.ReplaceAllString(line, "")
 
 		// Make it CSV
 		line = csvRegex.ReplaceAllString(line, ",")
 		line = strings.Trim(line, "[],")
-		sb.WriteString(line)
-		sb.WriteString("\n")
+
+		// Remove the protocol (txt)
+		if txtLine.MatchString(line) {
+			parts := strings.Split(line, ",")
+			line = parts[0] + "," + parts[2]
+
+		}
+
+		// Skip lines that don't have 2 commas as it's not a valid vulnerability
+		if strings.Count(line, ",") < 1 {
+			continue
+		}
+		sb.WriteString(line + "\n")
 	}
 	return sb.String()
 }
