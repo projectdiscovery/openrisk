@@ -48,7 +48,7 @@ func main() {
 	var issues = readFiles(files)
 	issues = reduceTokens(issues)
 	if len(issues) == 0 {
-		gologger.Info().Label("RISK SCORE").Msg("Risk Score: 0 \nExecutive Summary: No critical vulnerabilities found.")
+		gologger.Info().Label("RISK SCORE").Msg("Risk Score: 0 \nExecutive Summary: No vulnerabilities found.")
 		return
 	}
 
@@ -174,11 +174,6 @@ func reduceTokens(issues string) string {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Skip info/unknown lines as they don't impact the score (md)
-		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
-			continue
-		}
-
 		// Skip lines that start with space, \, or [ but not [YYYY-MM-DD HH:MM:SS] (txt)
 		if skipTxtRegex.MatchString(line) {
 			continue
@@ -197,6 +192,11 @@ func reduceTokens(issues string) string {
 			parts := strings.Split(line, ",")
 			line = parts[0] + "," + parts[2]
 
+		}
+
+		// Skip info/unknown lines as they don't impact the score (md)
+		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
+			continue
 		}
 
 		// Skip lines that don't have 2 commas as it's not a valid vulnerability
