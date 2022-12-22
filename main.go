@@ -14,12 +14,12 @@ import (
 )
 
 var banner = fmt.Sprintf(`
-experimental  
+Research Experiment  
 ____  ____  ___  ____  _____(_)____/ /__
 / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
-  /_/                                   
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_| Powered by OpenAI (GPT-3)
+  /_/ PD Research Experiment
   `)
 
 func printBanner() {
@@ -27,7 +27,7 @@ func printBanner() {
 	gologger.Print().Msgf("\t\tprojectdiscovery.io\n\n")
 }
 
-const Question = "Calculate the 10-scale risk score for the following Nuclei scan results, with critical=10,high=7,medium=5,low=3. The format of the CSV is 'finding,severity'. Always add 'because' with a one-line explanation."
+const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'"
 
 var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
 
