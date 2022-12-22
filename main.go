@@ -47,6 +47,11 @@ func main() {
 
 	var issues = readFiles(files)
 	issues = reduceTokens(issues)
+	if len(issues) == 0 {
+		gologger.Info().Label("RISK SCORE").Msg("Risk Score: 0 \nExecutive Summary: No critical vulnerabilities found.")
+		return
+	}
+
 	var prompt = buildPrompt(issues)
 	var completion = getCompletion(prompt)
 	gologger.Info().Label("RISK SCORE").Msg(completion)
