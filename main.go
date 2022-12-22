@@ -14,7 +14,6 @@ import (
 )
 
 var banner = fmt.Sprintf(`
-Research Experiment  
 ____  ____  ___  ____  _____(_)____/ /__
 / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
@@ -96,7 +95,7 @@ func readFiles(files []string) string {
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
 		} else {
-			gologger.Error().Msgf("Unknown file type (txt or md only): ", file)
+			gologger.Error().Msgf("Unknown file type: ", file)
 		}
 	}
 	return issues
@@ -168,8 +167,8 @@ func reduceTokens(issues string) string {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Skip info lines as they don't impact the score
-		if strings.HasSuffix(line, "info") {
+		// Skip info/unknown lines as they don't impact the score
+		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
 			continue
 		}
 
