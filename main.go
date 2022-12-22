@@ -13,13 +13,15 @@ import (
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
+var version = "0.0.1"
+
 var banner = fmt.Sprintf(`
 ____  ____  ___  ____  _____(_)____/ /__
 / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
 \____/ .___/\___/_/ /_/_/  /_/____/_/|_| Powered by OpenAI (GPT-3)
-  /_/ PD Research Experiment
-  `)
+  /_/ PD Research Experiment v%s
+  `, version)
 
 func printBanner() {
 	gologger.Print().Msgf("%s\n", banner)
