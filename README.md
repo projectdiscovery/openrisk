@@ -1,14 +1,18 @@
-# openrisk
+<h1 align="center">
+  openrisk
+<br>
+</h1>
 
-openrisk is an experimental tool which reads nuclei output (text and markdown) and generates a risk score for the host using OpenAI's GPT-3 model. It is intended, for now, to work against a single target at a time.
+
+openrisk is an experimental tool which reads [nuclei](http://github.com/projectdiscovery/nuclei) output (text and markdown) and generates a risk score for the host using OpenAI's GPT-3 model. It is intended, for now, to work against a single target at a time.
 
 > **NOTE**: This is an experimental program released by the ProjectDiscovery Research Team. As such, it may not meet the same code quality standards as our other projects, and may not be as well-tested. We welcome suggestions, bug fixes, and ideas on integrating these experiments into our other tools!
 
-# Install openrisk
+### Install openrisk
 openrisk requires **go1.18** to install successfully. Run the following command to install the latest version -
 
 ```sh
-go install -v github.com/projectdiscovery/openrisk
+go install -v github.com/projectdiscovery/openrisk@latest
 ```
 
 ### Usage
@@ -29,6 +33,8 @@ openrisk -h
   -i string
         Nuclei scan result file or directory path. Supported file extensions: .txt, .md
 ```
+
+> **NOTE**: `OPENAI_API_KEY` is required to run this program and can be obtained by signing up at `https://openai.com/api/`
 
 ### Generating Risk Score
 
