@@ -65,14 +65,14 @@ func getFiles(input string) ([]string, bool) {
 
 	filedetails, err := os.Stat(input)
 	if err != nil {
-		gologger.Error().Msgf("Invalid filename or directory.", err)
+		gologger.Error().Msgf("Invalid filename or directory: %v", err)
 		return nil, false
 	}
 
 	if filedetails.IsDir() {
 		dir, err := os.Open(input)
 		if err != nil {
-			gologger.Error().Msgf("Could not read the directory.", err)
+			gologger.Error().Msgf("Could not read the directory: %v", err)
 			return nil, false
 		}
 		fileInfos, _ := dir.Readdir(-1)
@@ -93,7 +93,7 @@ func readFiles(files []string) string {
 	for _, file := range files {
 		nucleiScanResult, err := os.ReadFile(file)
 		if err != nil {
-			gologger.Error().Msgf("Could not read the nuclei scan result.", err)
+			gologger.Error().Msgf("Could not read the nuclei scan result: %v", err)
 			continue
 		}
 
@@ -102,7 +102,7 @@ func readFiles(files []string) string {
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
 		} else {
-			gologger.Error().Msgf("Unknown file type: ", file)
+			gologger.Error().Msgf("Unknown file type: %v", file)
 		}
 	}
 	return issues
@@ -124,7 +124,7 @@ func getCompletion(prompt string) string {
 func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionResponse {
 	resp, err := c.CreateCompletion(context.Background(), req)
 	if err != nil {
-		gologger.Error().Msgf("An error occurred while getting the completion.", err)
+		gologger.Error().Msgf("An error occurred while getting the completion: %v", err)
 		os.Exit(1)
 	}
 	return resp
@@ -149,7 +149,7 @@ func buildRequest(prompt string) gogpt.CompletionRequest {
 func getApiKey() string {
 	var apiKey = os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		gologger.Error().Msgf("Envirment variable OPENAI_API_KEY is not set.")
+		gologger.Error().Msg("Envirment variable OPENAI_API_KEY is not set.")
 		os.Exit(1)
 	}
 	return apiKey
