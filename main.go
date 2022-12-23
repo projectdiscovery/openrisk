@@ -170,7 +170,7 @@ func reduceTokens(issues string) string {
 	dateRegex := regexp.MustCompile(`^\[\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}\] `)
 	urlRegex := regexp.MustCompile(`(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)`)
 	csvRegex := regexp.MustCompile(`\] \[?`)
-	skipTxtRegex := regexp.MustCompile(`^(\[INF]|\[WRN]|\[ERR]|\[DBG]|\[FTL]|\s|\/|\\)`)
+	skipTxtRegex := regexp.MustCompile(`^(\[INF]|\[WRN]|\[ERR]|\[DBG]|\[FTL]|\s|\/|\\|\d)`)
 	txtLine := regexp.MustCompile("^.*,.*,")
 	scanner := bufio.NewScanner(strings.NewReader(issues))
 	for scanner.Scan() {
