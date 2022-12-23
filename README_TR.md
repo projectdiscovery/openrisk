@@ -19,17 +19,16 @@ openrisk -h
 
 ```console
 
-experimental  
 ____  ____  ___  ____  _____(_)____/ /__
 / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
-  /_/                                   
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_| Powered by OpenAI (GPT-3)
+  /_/ PD Research Experiment
   
                 projectdiscovery.io
 
   -i string
-    	Nuclei scan result file or directory path. Supported file extensions: .txt, .md
+        Nuclei scan result file or directory path. Supported file extensions: .txt, .md
 ```
 
 ### Risk puanı oluşturma
