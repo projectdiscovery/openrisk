@@ -39,8 +39,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/projectdiscovery/gologger v1.1.7 h1:QeByO4NR8vlZ5ZM2XIOJARRj5WOOU5Ix35FBQ1iH5Rk=
 github.com/projectdiscovery/gologger v1.1.7/go.mod h1:bNyVaC1U/NpJtFkJltcesn01NR3K8Hg6RsLVce6yvrw=
-github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad h1:xuO52/X2TArHVbDISrxXasZrDhdsSGABAR5sJrePVGU=
-github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad/go.mod h1:BIZdbwdzxZbCrcKGMGH6u2eyGe1xFuX9Anmh3tCP8lQ=
+github.com/sashabaranov/go-gpt3 v1.2.1 h1:kfU+vQ1ThI7p+xfwwJC8olEEEWjK3smgKZ3FcYbaLRQ=
+github.com/sashabaranov/go-gpt3 v1.2.1/go.mod h1:BIZdbwdzxZbCrcKGMGH6u2eyGe1xFuX9Anmh3tCP8lQ=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5CcY=
