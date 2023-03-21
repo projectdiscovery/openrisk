@@ -21,3 +21,6 @@ openrisk
 # Go workspace file
 go.work
 dist/*
+
+# IDE settings
+/.idea

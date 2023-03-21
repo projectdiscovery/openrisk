@@ -3,14 +3,14 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/projectdiscovery/gologger"
+	gogpt "github.com/sashabaranov/go-gpt3"
 	"os"
 	"regexp"
 	"strings"
-
-	"github.com/projectdiscovery/gologger"
-	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 var version = "0.0.1"
@@ -31,7 +31,7 @@ func printBanner() {
 
 const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
 
-var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
+var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .json")
 
 func main() {
 	printBanner()
@@ -100,6 +100,8 @@ func readFiles(files []string) string {
 
 		if strings.HasSuffix(file, ".md") {
 			issues += parseMD(nucleiScanResult)
+		} else if strings.HasSuffix(file, ".json") {
+			issues += parseJSON(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
 		} else {
@@ -198,7 +200,7 @@ func reduceTokens(issues string) string {
 		}
 
 		// Skip info/unknown lines as they don't impact the score (md)
-		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
+		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unknown") {
 			continue
 		}
 
@@ -239,5 +241,26 @@ func parseMD(nucleiScanResult []byte) string {
 		}
 	}
 
-	return (results["details"] + "," + results["severity"] + "\n")
+	return results["details"] + "," + results["severity"] + "\n"
+}
+
+// parseJSON: parses the nuclei scan result in JSON line format (e.g. when nuclei is run with the -json flag)
+func parseJSON(nucleiScanResult []byte) string {
+	// Initialize the empty results string. This will be in the format "details,severity\n"
+	results := ""
+
+	// Loop through the lines of the file and parse each row as a JSON object as Nuclei exports the json
+	// file as a JSON-line file
+	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
+	for scanner.Scan() {
+		line := scanner.Text()
+		var result NucleiResult
+		err := json.Unmarshal([]byte(line), &result)
+		if err != nil {
+			return "Error Parsing JSON object"
+		}
+		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)
+	}
+
+	return results
 }
