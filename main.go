@@ -246,7 +246,8 @@ func parseMD(nucleiScanResult []byte) string {
 
 // parseJSON: parses the nuclei scan result in JSON line format (e.g. when nuclei is run with the -json flag)
 func parseJSON(nucleiScanResult []byte) string {
-	// Initialize the empty results string. This will be in the format "details,severity\n"
+	// Initialize the empty results string. This will be in the format "template_name,severity\n" to match the resulting
+	// string from the Markdown parsing in parseMD()
 	results := ""
 
 	// Loop through the lines of the file and parse each row as a JSON object as Nuclei exports the json
@@ -257,7 +258,9 @@ func parseJSON(nucleiScanResult []byte) string {
 		var result NucleiResult
 		err := json.Unmarshal([]byte(line), &result)
 		if err != nil {
-			return "Error Parsing JSON object"
+			// Don't fatally break on a corrupt JSON object
+			print("Error Parsing JSON object")
+			continue
 		}
 		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)
 	}
