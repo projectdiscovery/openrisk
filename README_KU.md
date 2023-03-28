@@ -27,7 +27,7 @@ openrisk -h
                 projectdiscovery.io
 
   -i string
-        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .json
+        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
 ```
 
 ### Hilberîna xala riskê

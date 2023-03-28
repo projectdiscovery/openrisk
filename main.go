@@ -6,11 +6,12 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/projectdiscovery/gologger"
-	gogpt "github.com/sashabaranov/go-gpt3"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/projectdiscovery/gologger"
+	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 var version = "0.0.1"
@@ -31,7 +32,7 @@ func printBanner() {
 
 const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
 
-var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .json")
+var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl")
 
 func main() {
 	printBanner()
@@ -100,7 +101,7 @@ func readFiles(files []string) string {
 
 		if strings.HasSuffix(file, ".md") {
 			issues += parseMD(nucleiScanResult)
-		} else if strings.HasSuffix(file, ".json") {
+		} else if strings.HasSuffix(file, ".jsonl") {
 			issues += parseJSON(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
@@ -259,7 +260,7 @@ func parseJSON(nucleiScanResult []byte) string {
 		err := json.Unmarshal([]byte(line), &result)
 		if err != nil {
 			// Don't fatally break on a corrupt JSON object
-			print("Error Parsing JSON object")
+			gologger.Error().Msgf("failed to parse nuclei JSONL got %v", err)
 			continue
 		}
 		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)

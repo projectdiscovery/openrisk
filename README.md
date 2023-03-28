@@ -31,7 +31,7 @@ openrisk -h
                 projectdiscovery.io
 
   -i string
-        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .json
+        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
 ```
 
 > **NOTE**: `OPENAI_API_KEY` is required to run this program and can be obtained by signing up at `https://openai.com/api/`
