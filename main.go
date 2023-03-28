@@ -102,7 +102,7 @@ func readFiles(files []string) string {
 		if strings.HasSuffix(file, ".md") {
 			issues += parseMD(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".jsonl") {
-			issues += parseJSON(nucleiScanResult)
+			issues += parseJSONL(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
 		} else {
@@ -246,7 +246,7 @@ func parseMD(nucleiScanResult []byte) string {
 }
 
 // parseJSON: parses the nuclei scan result in JSON line format (e.g. when nuclei is run with the -json flag)
-func parseJSON(nucleiScanResult []byte) string {
+func parseJSONL(nucleiScanResult []byte) string {
 	// Initialize the empty results string. This will be in the format "template_name,severity\n" to match the resulting
 	// string from the Markdown parsing in parseMD()
 	results := ""
