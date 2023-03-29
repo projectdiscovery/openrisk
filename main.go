@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -31,7 +32,7 @@ func printBanner() {
 
 const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
 
-var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md")
+var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl")
 
 func main() {
 	printBanner()
@@ -100,6 +101,8 @@ func readFiles(files []string) string {
 
 		if strings.HasSuffix(file, ".md") {
 			issues += parseMD(nucleiScanResult)
+		} else if strings.HasSuffix(file, ".jsonl") {
+			issues += parseJSONL(nucleiScanResult)
 		} else if strings.HasSuffix(file, ".txt") {
 			issues += string(nucleiScanResult)
 		} else {
@@ -198,7 +201,7 @@ func reduceTokens(issues string) string {
 		}
 
 		// Skip info/unknown lines as they don't impact the score (md)
-		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unkonwn") {
+		if strings.HasSuffix(line, "info") || strings.HasSuffix(line, "unknown") {
 			continue
 		}
 
@@ -239,5 +242,37 @@ func parseMD(nucleiScanResult []byte) string {
 		}
 	}
 
-	return (results["details"] + "," + results["severity"] + "\n")
+	return results["details"] + "," + results["severity"] + "\n"
+}
+
+// parseJSON: parses the nuclei scan result in JSON line format (e.g. when nuclei is run with the -json flag)
+func parseJSONL(nucleiScanResult []byte) string {
+	// Initialize the empty results string. This will be in the format "template_name,severity\n" to match the resulting
+	// string from the Markdown parsing in parseMD()
+	results := ""
+
+	// Loop through the lines of the file and parse each row as a JSON object as Nuclei exports the json
+	// file as a JSON-line file
+	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
+	for scanner.Scan() {
+		line := scanner.Text()
+		// Set the default and minimally required fields for the NucleiResult struct that are utilized in the result
+		// parsing below
+		result := NucleiResult{
+			Info: NucleiInfo{
+				Name:     "",
+				Severity: "",
+			},
+		}
+		//var result NucleiResult
+		err := json.Unmarshal([]byte(line), &result)
+		if err != nil {
+			// Don't fatally break on a corrupt JSON object
+			gologger.Error().Msgf("failed to parse nuclei JSONL got %v", err)
+			continue
+		}
+		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)
+	}
+
+	return results
 }
