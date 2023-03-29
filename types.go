@@ -1,28 +1,14 @@
 package main
 
+// The JSON types do not define the entire structure of the JSON object that is exported by Nuclei, but rather only
+// the fields that are used in the issue list generation. This reduces the amount of data that is parsed from the JSON
+// file as well as reducing the risk of a change in the Nuclei JSON export format breaking the issue list generation.
+
+type NucleiInfo struct {
+	Name     string `json:"name,omitempty"`
+	Severity string `json:"severity,omitempty"`
+}
+
 type NucleiResult struct {
-	Template     string
-	TemplateUrl  string `json:"template-url"`
-	TemplateID   string `json:"template-id"`
-	TemplatePath string `json:"template-path"`
-	Info         struct {
-		Name           string
-		Author         []string
-		Tags           []string
-		Description    string
-		Reference      []string
-		Severity       string
-		Classification struct {
-			CveID string   `json:"cve-id"`
-			CweID []string `json:"cwe-id"`
-		}
-	}
-	MatcherName   string `json:"matcher-name"`
-	Type          string
-	Host          string
-	Ip            string
-	Timestamp     string
-	CurlCommand   string `json:"curl-command"`
-	MatcherStatus bool   `json:"matcher-status"`
-	MatchedLine   string `json:"matched-line"`
+	Info NucleiInfo
 }

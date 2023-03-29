@@ -256,7 +256,15 @@ func parseJSONL(nucleiScanResult []byte) string {
 	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
 	for scanner.Scan() {
 		line := scanner.Text()
-		var result NucleiResult
+		// Set the default and minimally required fields for the NucleiResult struct that are utilized in the result
+		// parsing below
+		result := NucleiResult{
+			Info: NucleiInfo{
+				Name:     "",
+				Severity: "",
+			},
+		}
+		//var result NucleiResult
 		err := json.Unmarshal([]byte(line), &result)
 		if err != nil {
 			// Don't fatally break on a corrupt JSON object
