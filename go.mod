@@ -3,8 +3,8 @@ module github.com/projectdiscovery/openrisk
 go 1.18
 
 require (
+	github.com/projectdiscovery/gologger v1.1.9
 	github.com/sashabaranov/go-gpt3 v1.3.3
-	github.com/projectdiscovery/gologger v1.1.8
 )
 
 require (
