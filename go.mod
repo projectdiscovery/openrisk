@@ -3,14 +3,16 @@ module github.com/projectdiscovery/openrisk
 go 1.18
 
 require (
+	github.com/projectdiscovery/gologger v1.1.10
 	github.com/sashabaranov/go-gpt3 v1.3.3
-	github.com/projectdiscovery/gologger v1.1.8
 )
 
 require (
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kr/pretty v0.3.1 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
 	github.com/mholt/archiver v3.1.1+incompatible // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
