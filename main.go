@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/projectdiscovery/gologger"
-	"github.com/projectdiscovery/openrisk/openrisk"
+	"github.com/projectdiscovery/openrisk/pkg/openrisk"
 )
 
 var version = "0.0.1"
