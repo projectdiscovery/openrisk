@@ -21,10 +21,10 @@ jobs:
 
       - name: Build
         run: go build .
-        working-directory: .
+        working-directory: cmd/openrisk
 
       - name: Test
         run: go test ./...
-        working-directory: .
+        working-directory: cmd/openrisk
 
       
