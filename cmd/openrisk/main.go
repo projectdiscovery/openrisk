@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/openrisk/pkg/openrisk"
@@ -37,34 +36,19 @@ func main() {
 		return
 	}
 
-	files, err := getFiles(*input)
+	apiKey := getApiKey()
+	options := &openrisk.Options{ApiKey: apiKey}
+	openRisk, _ := openrisk.New(options)
+
+	issueParser := openrisk.NewIssueParser(*input)
+	issues, err := issueParser.Parse()
 	if err != nil {
 		flag.PrintDefaults()
 		return
 	}
 
-	apiKey := getApiKey()
-	options := &openrisk.Options{ApiKey: apiKey}
-	openRisk, _ := openrisk.New(options)
-
-	issues, _ := openRisk.ParseFiles(files)
 	nucleiScan, _ := openRisk.GetScore(issues)
 	gologger.Info().Label("RISK SCORE").Msg(nucleiScan.Score)
-}
-
-func getFiles(input string) ([]string, error) {
-	var files []string
-	err := filepath.Walk(input, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			gologger.Error().Msgf("Invalid filename or directory: %v", err)
-			return err
-		}
-		if !info.IsDir() {
-			files = append(files, path)
-		}
-		return nil
-	})
-	return files, err
 }
 
 func getApiKey() string {

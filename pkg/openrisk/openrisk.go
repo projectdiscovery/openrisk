@@ -35,28 +35,6 @@ func (o *OpenRisk) GetScore(scanIssues string) (NucleiScan, error) {
 	return NucleiScan{Issues: scanIssues, Score: strings.TrimSpace(resp.Choices[0].Text)}, nil
 }
 
-func (o *OpenRisk) ParseFiles(files []string) (string, error) {
-	var issues string
-	for _, file := range files {
-		nucleiScanResult, err := os.ReadFile(file)
-		if err != nil {
-			gologger.Error().Msgf("Could not read the nuclei scan result: %v", err)
-			continue
-		}
-
-		if strings.HasSuffix(file, ".md") {
-			issues += parseMD(nucleiScanResult)
-		} else if strings.HasSuffix(file, ".jsonl") {
-			issues += parseJSONL(nucleiScanResult)
-		} else if strings.HasSuffix(file, ".txt") {
-			issues += string(nucleiScanResult)
-		} else {
-			gologger.Error().Msgf("Unknown file type: %v", file)
-		}
-	}
-	return issues, nil
-}
-
 func parseMD(nucleiScanResult []byte) string {
 	rName := regexp.MustCompile(`^\| Name \|\s*(.*)\s*\|$`)
 	rSev := regexp.MustCompile(`^\| Severity \|\s*(.*)\s*\|$`)
