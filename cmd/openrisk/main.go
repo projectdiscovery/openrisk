@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/openrisk/pkg/openrisk"
@@ -36,8 +37,8 @@ func main() {
 		return
 	}
 
-	files, isValidPath := getFiles(*input)
-	if !isValidPath {
+	files, err := getFiles(*input)
+	if err != nil {
 		flag.PrintDefaults()
 		return
 	}
@@ -51,35 +52,21 @@ func main() {
 	gologger.Info().Label("RISK SCORE").Msg(nucleiScan.Score)
 }
 
-// getFiles: returns a list of files in the given directory or the file itself
-func getFiles(input string) ([]string, bool) {
+func getFiles(input string) ([]string, error) {
 	var files []string
-
-	filedetails, err := os.Stat(input)
-	if err != nil {
-		gologger.Error().Msgf("Invalid filename or directory: %v", err)
-		return nil, false
-	}
-
-	if filedetails.IsDir() {
-		dir, err := os.Open(input)
+	err := filepath.Walk(input, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			gologger.Error().Msgf("Could not read the directory: %v", err)
-			return nil, false
+			gologger.Error().Msgf("Invalid filename or directory: %v", err)
+			return err
 		}
-		fileInfos, _ := dir.Readdir(-1)
-		for _, fileInfo := range fileInfos {
-			files = append(files, input+"/"+fileInfo.Name())
+		if !info.IsDir() {
+			files = append(files, path)
 		}
-		defer dir.Close()
-
-	} else {
-		files = append(files, input)
-	}
-	return files, true
+		return nil
+	})
+	return files, err
 }
 
-// getApiKey: returns the API key from the OPENAI_API_KEY environment variable
 func getApiKey() string {
 	var apiKey = os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
