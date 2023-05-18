@@ -1,4 +1,4 @@
-package main
+package openrisk
 
 import gogpt "github.com/sashabaranov/go-gpt3"
 
