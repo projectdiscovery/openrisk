@@ -7,7 +7,8 @@
 *.dll
 *.so
 *.dylib
-
+openrisk
+!openrisk/
 
 # Test binary, built with `go test -c`
 *.test
