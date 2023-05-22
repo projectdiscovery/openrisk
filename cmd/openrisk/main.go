@@ -40,8 +40,8 @@ func main() {
 	options := &openrisk.Options{ApiKey: apiKey}
 	openRisk, _ := openrisk.New(options)
 
-	issueParser := openrisk.NewIssueParser(*input)
-	issues, err := issueParser.Parse()
+	issueProcessor := openrisk.NewIssueProcessor(*input)
+	issues, err := issueProcessor.Process()
 	if err != nil {
 		flag.PrintDefaults()
 		return

@@ -3,8 +3,6 @@ package openrisk
 import (
 	"bufio"
 	"context"
-	"encoding/json"
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -33,67 +31,6 @@ func (o *OpenRisk) GetScore(scanIssues string) (NucleiScan, error) {
 	req := buildRequest(prompt)
 	resp := makeRequest(o.client, req)
 	return NucleiScan{Issues: scanIssues, Score: strings.TrimSpace(resp.Choices[0].Text)}, nil
-}
-
-func parseMD(nucleiScanResult []byte) string {
-	rName := regexp.MustCompile(`^\| Name \|\s*(.*)\s*\|$`)
-	rSev := regexp.MustCompile(`^\| Severity \|\s*(.*)\s*\|$`)
-	results := make(map[string]string)
-	results["details"] = ""
-	results["severity"] = "unknown"
-
-	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
-	for scanner.Scan() {
-		line := scanner.Text()
-		mName := rName.FindStringSubmatch(line)
-		if len(mName) > 0 {
-			results["details"] = strings.TrimSpace(mName[1])
-			continue
-		}
-
-		mSev := rSev.FindStringSubmatch(line)
-		if len(mSev) > 0 {
-			results["severity"] = strings.TrimSpace(mSev[1])
-			continue
-		}
-
-		if mSev != nil && mName != nil {
-			break
-		}
-	}
-
-	return results["details"] + "," + results["severity"] + "\n"
-}
-
-func parseJSONL(nucleiScanResult []byte) string {
-	// Initialize the empty results string. This will be in the format "template_name,severity\n" to match the resulting
-	// string from the Markdown parsing in parseMD()
-	results := ""
-
-	// Loop through the lines of the file and parse each row as a JSON object as Nuclei exports the json
-	// file as a JSON-line file
-	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
-	for scanner.Scan() {
-		line := scanner.Text()
-		// Set the default and minimally required fields for the NucleiResult struct that are utilized in the result
-		// parsing below
-		result := NucleiResult{
-			Info: NucleiInfo{
-				Name:     "",
-				Severity: "",
-			},
-		}
-		//var result NucleiResult
-		err := json.Unmarshal([]byte(line), &result)
-		if err != nil {
-			// Don't fatally break on a corrupt JSON object
-			gologger.Error().Msgf("failed to parse nuclei JSONL got %v", err)
-			continue
-		}
-		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)
-	}
-
-	return results
 }
 
 func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionResponse {
