@@ -67,7 +67,7 @@ func main() {
 func getApiKey() string {
 	var apiKey = os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		gologger.Error().Msg("Environment variable OPENAI_API_KEY is not set.")
+		gologger.Error().Msg("Environment variable for OPENAI_API_KEY is not set.")
 		os.Exit(1)
 	}
 	return apiKey
