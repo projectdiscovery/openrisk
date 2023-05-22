@@ -27,4 +27,8 @@ jobs:
         run: go test ./...
         working-directory: cmd/openrisk
 
+      - name: Running example
+        run: go run .
+        working-directory: examples/
+
       
