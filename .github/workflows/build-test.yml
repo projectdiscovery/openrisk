@@ -28,6 +28,8 @@ jobs:
         working-directory: cmd/openrisk
 
       - name: Running example
+        env:
+          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
         run: go run .
         working-directory: examples/
 
