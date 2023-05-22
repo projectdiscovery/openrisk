@@ -9,7 +9,7 @@ openrisk is an experimental tool which reads [nuclei](http://github.com/projectd
 > **NOTE**: This is an experimental program released by the ProjectDiscovery Research Team. As such, it may not meet the same code quality standards as our other projects, and may not be as well-tested. We welcome suggestions, bug fixes, and ideas on integrating these experiments into our other tools!
 
 ### Install openrisk
-openrisk requires **go1.18** to install successfully. Run the following command to install the latest version -
+openrisk requires **go1.20** to install successfully. Run the following command to install the latest version -
 
 ```sh
 go install -v github.com/projectdiscovery/openrisk@latest

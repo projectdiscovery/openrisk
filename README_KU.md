@@ -5,7 +5,7 @@ openrisk amûrek ceribandî ye ku derketina nuclei (text û markdown) dixwîne �
 > **NOTE**: Ev bernameyek ceribandinê ye ku ji hêla Tîma Lêkolînê ya ProjectDiscovery ve hatî berdan. Bi vî rengî, dibe ku ew standardên kalîteya kodê wekî projeyên me yên din pêk neyne û dibe ku ew qas baş neyê ceribandin. Em pêşwaziya pêşniyaran, rastkirina xeletiyan, û ramanên li ser yekkirina van ceribandinan di nav amûrên me yên din de dikin!
 
 # openrisk saz bikin
-openrisk pêdivî ye ku **go1.18** bi serfirazî were saz kirin. Fermana jêrîn bicîh bikin ku guhertoya herî dawî saz bikin -
+openrisk pêdivî ye ku **go1.20** bi serfirazî were saz kirin. Fermana jêrîn bicîh bikin ku guhertoya herî dawî saz bikin -
 
 ```sh
 go install -v github.com/projectdiscovery/openrisk

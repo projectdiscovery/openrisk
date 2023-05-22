@@ -5,7 +5,7 @@ openrisk, nuclei çıktısını (text ve markdown) okuyan ve OpenAI'nin GPT-3 mo
 > **NOT**: Bu, ProjectDiscovery Araştırma Ekibi tarafından yayınlanan deneysel bir programdır. Bu nedenle, diğer projelerimizle aynı kod kalite standartlarını karşılamayabilir ve iyi test edilmemiş olabilir. Önerilere, hata düzeltmelerine ve bu deneyleri diğer araçlarımıza entegre etmeye yönelik fikirlere açığız!
 
 # openrisk'i yükleyin
-openrisk'in başarıyla yüklenmesi için **go1.18** gereklidir. En son sürümü yüklemek için aşağıdaki komutu çalıştırın -
+openrisk'in başarıyla yüklenmesi için **g20** gereklidir. En son sürümü yüklemek için aşağıdaki komutu çalıştırın -
 
 ```sh
 go install -v github.com/projectdiscovery/openrisk
