@@ -35,7 +35,7 @@ var cliOptions = CliOptions{}
 func main() {
 	printBanner()
 	flagSet := goflags.NewFlagSet()
-	flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "scan result file/files", goflags.CommaSeparatedStringSliceOptions)
+	flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl", goflags.CommaSeparatedStringSliceOptions)
 
 	if err := flagSet.Parse(); err != nil {
 		gologger.Error().Msg("could not parse flags")

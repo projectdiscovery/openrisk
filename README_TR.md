@@ -26,7 +26,9 @@ openrisk -h
     /_/                                   v0.0.1 (experimental)  
                 projectdiscovery.io
 
-  -i string
+    -f value
+        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
+    -files value
         Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
 ```
 
@@ -34,13 +36,13 @@ openrisk -h
 
 ```sh
 export OPENAI_API_KEY=<OPENAI_API_KEY>
-openrisk -i nuclei_scan_result.txt
+openrisk -f nuclei_scan_result.txt
 ```
 
 Örnek çıktı:
 
 ```console
-openrisk -i nuclei_results.txt
+openrisk -f nuclei_results.txt
 
                                _      __  
   ____  ____  ___  ____  _____(_)____/ /__
@@ -53,3 +55,7 @@ openrisk -i nuclei_results.txt
 
 [RISK SCORE] The 10-scale risk score for the Nuclei scan results is 10. There are multiple high-severity vulnerabilities related to Pantheon, AWS, and Netlify takeovers.
 ```
+
+### `openrisk`'i bir kütüphane olarak kullanma
+
+`openrisk`'i bir kütüphane olarak kullanmak için, `Options` örneği oluşturun ve OpenAI API anahtarınızı girin. Bu seçeneklerle, örnek bir nuclei tarama sonuç dosyasını dahil ederek `OpenRisk` ve `IssueProcessor`'u oluşturabilirsiniz. Örnek dosya için bir puan oluşturmak için, `openRisk.GetScore` fonksiyonunu çağırın. Açık bir örnek için, [örnekler](examples/) klasöründeki sağlanan koda bakın.
