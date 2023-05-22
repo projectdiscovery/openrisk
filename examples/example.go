@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/openrisk/pkg/openrisk"
 )
 
@@ -17,5 +17,5 @@ func main() {
 	issues, _ := issueProcessor.Process()
 
 	nucleiScan, _ := openRisk.GetScore(issues)
-	gologger.Info().Msg(nucleiScan.Score)
+	fmt.Println(nucleiScan.Score)
 }
