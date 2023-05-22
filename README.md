@@ -30,10 +30,14 @@ openrisk -h
     /_/                                   v0.0.1 (experimental)  
                 projectdiscovery.io
 
-    -f value
-        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
-    -files value
-        Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
+ openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-3 model.
+
+Usage:
+  openrisk [flags]
+
+Flags:
+INPUT:
+   -f, -files string[]  Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
 ```
 
 > **NOTE**: `OPENAI_API_KEY` is required to run this program and can be obtained by signing up at `https://openai.com/api/`

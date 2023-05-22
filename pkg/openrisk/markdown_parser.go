@@ -6,14 +6,7 @@ import (
 	"strings"
 )
 
-type MarkdownIssueParser struct {
-}
-
-func NewMarkdownIssueParser() *MarkdownIssueParser {
-	return &MarkdownIssueParser{}
-}
-
-func (mip *MarkdownIssueParser) Parse(nucleiScanResult []byte) (string, error) {
+func ParseMarkdown(nucleiScanResult []byte) (string, error) {
 	rName := regexp.MustCompile(`^\| Name \|\s*(.*)\s*\|$`)
 	rSev := regexp.MustCompile(`^\| Severity \|\s*(.*)\s*\|$`)
 	results := make(map[string]string)

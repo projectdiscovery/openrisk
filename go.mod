@@ -1,6 +1,6 @@
 module github.com/projectdiscovery/openrisk
 
-go 1.18
+go 1.20
 
 require (
 	github.com/projectdiscovery/gologger v1.1.10

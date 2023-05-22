@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
 	"os"
 
@@ -35,7 +35,10 @@ var cliOptions = CliOptions{}
 func main() {
 	printBanner()
 	flagSet := goflags.NewFlagSet()
-	flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl", goflags.CommaSeparatedStringSliceOptions)
+	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-3 model.`)
+	flagSet.CreateGroup("input", "Input",
+		flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl", goflags.CommaSeparatedStringSliceOptions),
+	)
 
 	if err := flagSet.Parse(); err != nil {
 		gologger.Error().Msg("could not parse flags")
@@ -43,32 +46,31 @@ func main() {
 	}
 
 	if len(cliOptions.Files) == 0 {
-		flagSet.CommandLine.PrintDefaults()
-		return
+		gologger.Fatal().Msgf("no input provided")
 	}
 
-	apiKey := getApiKey()
+	apiKey, err := getApiKey()
+	if err != nil {
+		gologger.Fatal().Msgf("%s\n", err)
+	}
 	options := &openrisk.Options{ApiKey: apiKey}
 	openRisk, _ := openrisk.New(options)
 
 	for _, file := range cliOptions.Files {
-		issueProcessor := openrisk.NewIssueProcessor(file)
-		issues, err := issueProcessor.Process()
+		issues, err := openRisk.ParseIssuesWithFile(file)
 		if err != nil {
-			flag.PrintDefaults()
-			return
+			gologger.Error().Msgf("Could not parse issues: %v", err)
 		}
 
-		nucleiScan, _ := openRisk.GetScore(issues)
+		nucleiScan, _ := openRisk.GetScoreWithIssues(issues)
 		gologger.Info().Label("RISK SCORE[" + file + "]").Msg(nucleiScan.Score)
 	}
 }
 
-func getApiKey() string {
-	var apiKey = os.Getenv("OPENAI_API_KEY")
+func getApiKey() (string, error) {
+	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		gologger.Error().Msg("Environment variable for OPENAI_API_KEY is not set.")
-		os.Exit(1)
+		return "", errors.New("Environment variable for OPENAI_API_KEY is not set.")
 	}
-	return apiKey
+	return apiKey, nil
 }

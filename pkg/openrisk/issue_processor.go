@@ -1,7 +1,7 @@
 package openrisk
 
 import (
-	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,29 +9,16 @@ import (
 	"github.com/projectdiscovery/gologger"
 )
 
-type IssueProcessor struct {
-	path    string
-	parsers map[string]IssueParser
-}
-
-func NewIssueProcessor(path string) *IssueProcessor {
-	return &IssueProcessor{path: path, parsers: map[string]IssueParser{
-		".md":    NewMarkdownIssueParser(),
-		".jsonl": NewJsonlIssueParser(),
-		".txt":   NewTxtIssueParser(),
-	}}
-}
-
-func (ip *IssueProcessor) Process() (string, error) {
+func (o *OpenRisk) ParseIssuesWithFile(path string) (string, error) {
 	var issues strings.Builder
 
-	err := filepath.Walk(ip.path, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			gologger.Error().Msgf("Invalid filename or directory: %v", err)
 			return err
 		}
 		if !info.IsDir() {
-			issue, err := ip.processFile(path)
+			issue, err := processFile(path)
 			if err != nil {
 				return err
 			}
@@ -42,19 +29,21 @@ func (ip *IssueProcessor) Process() (string, error) {
 	return issues.String(), err
 }
 
-func (ip *IssueProcessor) processFile(path string) (string, error) {
+func processFile(path string) (string, error) {
 	nucleiScanResult, err := os.ReadFile(path)
 	if err != nil {
-		gologger.Error().Msgf("Could not read the nuclei scan result: %v", err)
-		return "", err
+		return "", fmt.Errorf("Could not read the nuclei scan result: %v", err)
 	}
 
 	ext := filepath.Ext(path)
-	parser, ok := ip.parsers[ext]
-	if !ok {
-		gologger.Error().Msgf("Unknown file type: %v", path)
-		return "", errors.New("unknown file type")
+	switch ext {
+	case ".jsonl":
+		return ParseJsonL(nucleiScanResult)
+	case ".md":
+		return ParseMarkdown(nucleiScanResult)
+	case ".txt":
+		return string(nucleiScanResult), nil
+	default:
+		return "", fmt.Errorf("Unknown file type: %v", path)
 	}
-
-	return parser.Parse(nucleiScanResult)
 }

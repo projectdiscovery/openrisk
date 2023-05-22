@@ -3,7 +3,8 @@ package openrisk
 import gogpt "github.com/sashabaranov/go-gpt3"
 
 type OpenRisk struct {
-	client gogpt.Client
+	Options *Options
+	client  *gogpt.Client
 }
 
 type Options struct {

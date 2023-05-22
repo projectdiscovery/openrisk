@@ -3,25 +3,29 @@ package openrisk
 import (
 	"bufio"
 	"context"
-	"os"
+	"errors"
 	"regexp"
 	"strings"
 
-	"github.com/projectdiscovery/gologger"
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
 
 func New(options *Options) (*OpenRisk, error) {
-	gptClient := newClientBuilder().
-		apiKey(options.ApiKey).
-		build()
-	return &OpenRisk{client: gptClient}, nil
+	if options.ApiKey == "" {
+		return nil, errors.New("api key not defined")
+	}
+	gptClient := gogpt.NewClient(options.ApiKey)
+	openRisk := &OpenRisk{
+		Options: options,
+		client:  gptClient,
+	}
+	return openRisk, nil
 
 }
 
-func (o *OpenRisk) GetScore(scanIssues string) (NucleiScan, error) {
+func (o *OpenRisk) GetScoreWithIssues(scanIssues string) (NucleiScan, error) {
 	issues := reduceTokens(scanIssues)
 	if len(issues) == 0 {
 		return NucleiScan{Issues: scanIssues, Score: "Risk Score: 0 \nExecutive Summary: No vulnerabilities found."}, nil
@@ -29,17 +33,18 @@ func (o *OpenRisk) GetScore(scanIssues string) (NucleiScan, error) {
 
 	prompt := buildPrompt(issues)
 	req := buildRequest(prompt)
-	resp := makeRequest(o.client, req)
+	resp, err := o.makeRequest(req)
+	if err != nil {
+		return NucleiScan{}, err
+	}
+	if len(resp.Choices) == 0 {
+		return NucleiScan{}, errors.New("no choices returned")
+	}
 	return NucleiScan{Issues: scanIssues, Score: strings.TrimSpace(resp.Choices[0].Text)}, nil
 }
 
-func makeRequest(c gogpt.Client, req gogpt.CompletionRequest) gogpt.CompletionResponse {
-	resp, err := c.CreateCompletion(context.Background(), req)
-	if err != nil {
-		gologger.Error().Msgf("An error occurred while getting the completion: %v", err)
-		os.Exit(1)
-	}
-	return resp
+func (o *OpenRisk) makeRequest(req gogpt.CompletionRequest) (gogpt.CompletionResponse, error) {
+	return o.client.CreateCompletion(context.Background(), req)
 }
 
 func buildRequest(prompt string) gogpt.CompletionRequest {
