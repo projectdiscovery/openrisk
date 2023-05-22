@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/openrisk/pkg/openrisk"
 )
@@ -25,14 +26,24 @@ func printBanner() {
 	gologger.Print().Msgf("\t\tprojectdiscovery.io\n\n")
 }
 
-var input = flag.String("i", "", "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl")
+type CliOptions struct {
+	Files goflags.StringSlice
+}
+
+var cliOptions = CliOptions{}
 
 func main() {
 	printBanner()
-	flag.Parse()
+	flagSet := goflags.NewFlagSet()
+	flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "scan result file/files", goflags.CommaSeparatedStringSliceOptions)
 
-	if *input == "" {
-		flag.PrintDefaults()
+	if err := flagSet.Parse(); err != nil {
+		gologger.Error().Msg("could not parse flags")
+		return
+	}
+
+	if len(cliOptions.Files) == 0 {
+		flagSet.CommandLine.PrintDefaults()
 		return
 	}
 
@@ -40,15 +51,17 @@ func main() {
 	options := &openrisk.Options{ApiKey: apiKey}
 	openRisk, _ := openrisk.New(options)
 
-	issueProcessor := openrisk.NewIssueProcessor(*input)
-	issues, err := issueProcessor.Process()
-	if err != nil {
-		flag.PrintDefaults()
-		return
-	}
+	for _, file := range cliOptions.Files {
+		issueProcessor := openrisk.NewIssueProcessor(file)
+		issues, err := issueProcessor.Process()
+		if err != nil {
+			flag.PrintDefaults()
+			return
+		}
 
-	nucleiScan, _ := openRisk.GetScore(issues)
-	gologger.Info().Label("RISK SCORE").Msg(nucleiScan.Score)
+		nucleiScan, _ := openRisk.GetScore(issues)
+		gologger.Info().Label("RISK SCORE[" + file + "]").Msg(nucleiScan.Score)
+	}
 }
 
 func getApiKey() string {
