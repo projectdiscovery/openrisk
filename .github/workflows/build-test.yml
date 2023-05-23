@@ -14,17 +14,23 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.18
+          go-version: 1.20.x
 
       - name: Check out code
         uses: actions/checkout@v3
 
       - name: Build
         run: go build .
-        working-directory: .
+        working-directory: cmd/openrisk
 
       - name: Test
         run: go test ./...
-        working-directory: .
+        working-directory: cmd/openrisk
+
+      - name: Building example
+        # env:
+        #   OPENAI_API_KEY: ${{secrets.OPENAI_API_KEY}}
+        run: go build .
+        working-directory: examples/
 
       
