@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/projectdiscovery/goflags v0.1.8
 	github.com/projectdiscovery/gologger v1.1.10
-	github.com/sashabaranov/go-gpt3 v1.3.3
+	github.com/sashabaranov/go-openai v1.24.0
 )
 
 require (

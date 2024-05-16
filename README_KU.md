@@ -1,6 +1,6 @@
 # openrisk
 
-openrisk amûrek ceribandî ye ku derketina nuclei (text û markdown) dixwîne û bi karanîna modela GPT-3 ya OpenAI-ê ji bo host xala rîskê çêdike. Armanc ew e, ji bo niha, ku di demekê de li dijî yek hostê bixebite.
+openrisk amûrek ceribandî ye ku derketina nuclei (text û markdown) dixwîne û bi karanîna modela GPT-4o ya OpenAI-ê ji bo host xala rîskê çêdike. Armanc ew e, ji bo niha, ku di demekê de li dijî yek hostê bixebite.
 
 > **NOTE**: Ev bernameyek ceribandinê ye ku ji hêla Tîma Lêkolînê ya ProjectDiscovery ve hatî berdan. Bi vî rengî, dibe ku ew standardên kalîteya kodê wekî projeyên me yên din pêk neyne û dibe ku ew qas baş neyê ceribandin. Em pêşwaziya pêşniyaran, rastkirina xeletiyan, û ramanên li ser yekkirina van ceribandinan di nav amûrên me yên din de dikin!
 
@@ -22,7 +22,7 @@ openrisk -h
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-4o)
     /_/                                   v0.0.1 (experimental)  
                 projectdiscovery.io
 
@@ -50,7 +50,7 @@ openrisk -f nuclei_results.txt
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-4o)
     /_/                                   v0.0.1 (experimental)                                          
   
     projectdiscovery.io

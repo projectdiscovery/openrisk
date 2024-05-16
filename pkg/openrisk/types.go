@@ -1,6 +1,6 @@
 package openrisk
 
-import gogpt "github.com/sashabaranov/go-gpt3"
+import gogpt "github.com/sashabaranov/go-openai"
 
 type OpenRisk struct {
 	Options *Options

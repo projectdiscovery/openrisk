@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	gogpt "github.com/sashabaranov/go-gpt3"
+	gogpt "github.com/sashabaranov/go-openai"
 )
 
 const Question = "Calculate the 10-scale risk score for the following Nuclei scan results. The format of the CSV is 'finding,severity'. Write an executive summary of vulnerabilities with 30 words max."
@@ -40,23 +40,18 @@ func (o *OpenRisk) GetScoreWithIssues(scanIssues string) (NucleiScan, error) {
 	if len(resp.Choices) == 0 {
 		return NucleiScan{}, errors.New("no choices returned")
 	}
-	return NucleiScan{Issues: scanIssues, Score: strings.TrimSpace(resp.Choices[0].Text)}, nil
+	return NucleiScan{Issues: scanIssues, Score: strings.TrimSpace(resp.Choices[0].Message.Content)}, nil
 }
 
-func (o *OpenRisk) makeRequest(req gogpt.CompletionRequest) (gogpt.CompletionResponse, error) {
-	return o.client.CreateCompletion(context.Background(), req)
+func (o *OpenRisk) makeRequest(req gogpt.ChatCompletionRequest) (gogpt.ChatCompletionResponse, error) {
+	return o.client.CreateChatCompletion(context.Background(), req)
 }
 
-func buildRequest(prompt string) gogpt.CompletionRequest {
-	req := gogpt.CompletionRequest{
-		Model:            "text-davinci-003",
-		Temperature:      0.01, // FIXME: https://github.com/sashabaranov/go-gpt3/issues/9
-		TopP:             1,
-		FrequencyPenalty: 0.01,
-		PresencePenalty:  0.01,
-		BestOf:           1,
-		MaxTokens:        256,
-		Prompt:           prompt,
+func buildRequest(prompt string) gogpt.ChatCompletionRequest {
+	req := gogpt.ChatCompletionRequest{
+		Model:            "gpt-4o",
+		Messages:         []gogpt.ChatCompletionMessage{{Role: "system", Content: "You're a security analyst reviewing a host's vulnerabilities."},
+		 {Role: "user", Content: prompt}},
 	}
 	return req
 }

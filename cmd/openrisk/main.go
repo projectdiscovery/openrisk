@@ -17,7 +17,7 @@ var banner = fmt.Sprintf(`
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-4o)
     /_/                                   v%s (experimental)                                          
   `, version)
 
@@ -35,7 +35,7 @@ var cliOptions = CliOptions{}
 func main() {
 	printBanner()
 	flagSet := goflags.NewFlagSet()
-	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-3 model.`)
+	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-4o model.`)
 	flagSet.CreateGroup("input", "Input",
 		flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl", goflags.CommaSeparatedStringSliceOptions),
 	)
