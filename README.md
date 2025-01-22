@@ -4,7 +4,7 @@
 </h1>
 
 
-openrisk is an experimental tool which reads [nuclei](http://github.com/projectdiscovery/nuclei) output (text, markdown, and JSON) and generates a risk score for the host using OpenAI's GPT-3 model. It is intended, for now, to work against a single target at a time.
+openrisk is an experimental tool which reads [nuclei](http://github.com/projectdiscovery/nuclei) output (JSONL) and generates a risk score for the scan. It is intended, for now, to work against a single scan at a time.
 
 > **NOTE**: This is an experimental program released by the ProjectDiscovery Research Team. As such, it may not meet the same code quality standards as our other projects, and may not be as well-tested. We welcome suggestions, bug fixes, and ideas on integrating these experiments into our other tools!
 
@@ -26,21 +26,21 @@ openrisk -h
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|
     /_/                                   v0.0.1 (experimental)  
                 projectdiscovery.io
 
- openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-3 model.
+ openrisk is an experimental tool generates a risk score from nuclei output for the scan.
 
 Usage:
   openrisk [flags]
 
 Flags:
 INPUT:
-   -f, -files string[]  Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl
+   -sf, -scan-file string  Nuclei scan result file (JSON only, required)
+   -c, -config string      the filename of the config (required)
 ```
 
-> **NOTE**: `OPENAI_API_KEY` is required to run this program and can be obtained by signing up at `https://openai.com/api/`
 
 ### Generating Risk Score
 
@@ -53,20 +53,18 @@ openrisk -f nuclei_scan_result.txt
 ### Example Run:
 
 ```console
-openrisk -f nuclei_results.txt
+openrisk -c default_config.yml -sf result.jsonl
 
                                _      __  
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|
     /_/                                   v0.0.1 (experimental)                                          
   
     projectdiscovery.io
 
-[RISK SCORE] The 10-scale risk score for the Nuclei scan results is 10. There are multiple high-severity vulnerabilities related to Pantheon, AWS, and Netlify takeovers.
+[RISK SCORE] 0.6221876600
 ```
 
-### Using `openrisk` as a library
 
-To utilize `openrisk` as a library, simply create an instance of the `Options` structure and input your OpenAI API key. With these options, you can then create `OpenRisk` and `IssueProcessor` by including a sample nuclei scan result file. To generate a score for the sample file, call the `openRisk.GetScore` function. For a clear example, refer to the code provided in the [examples](examples/) folder.
