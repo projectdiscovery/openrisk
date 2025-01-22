@@ -37,7 +37,7 @@ func main() {
 	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the asset.`)
 	flagSet.CreateGroup("input", "Input",
 		flagSet.StringVarP(&cliOptions.ScanFile, "scan-file", "sf", "", "Nuclei scan result file (JSON only, required)"),
-		flagSet.StringVarP(&cliOptions.Config, "config", "c", "", "the filename of the config (required)"),
+		flagSet.StringVarP(&cliOptions.Config, "config", "c", "", "the filename of the config"),
 	)
 
 	if err := flagSet.Parse(); err != nil {
@@ -47,10 +47,6 @@ func main() {
 
 	if cliOptions.ScanFile == "" {
 		gologger.Fatal().Msgf("no input provided")
-	}
-
-	if cliOptions.Config == "" {
-		gologger.Fatal().Msgf("no config provided")
 	}
 
 	options := &openrisk.Options{ConfigFile: cliOptions.Config}

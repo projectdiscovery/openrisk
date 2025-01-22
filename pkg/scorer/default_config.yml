@@ -20,13 +20,13 @@ inputs:
     distribution: zipfian
 
   - field: high_vulnerability
-    weight: 5
+    weight: 2.5
     bounds:
-      upper: 5
+      upper: 4
     distribution: zipfian
 
   - field: critical_vulnerability
-    weight: 30
+    weight: 5
     bounds:
       upper: 2
     distribution: zipfian
