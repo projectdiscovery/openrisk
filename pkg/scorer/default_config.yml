@@ -1,0 +1,50 @@
+algorithm: weighted_arithmetic_mean
+
+inputs:
+  - field: unknown_vulnerability
+    weight: 0.5
+    bounds:
+      upper: 40
+    distribution: zipfian
+
+  - field: low_vulnerability
+    weight: 1
+    bounds:
+      upper: 20
+    distribution: zipfian
+
+  - field: medium_vulnerability
+    weight: 1.5
+    bounds:
+      upper: 10
+    distribution: zipfian
+
+  - field: high_vulnerability
+    weight: 5
+    bounds:
+      upper: 5
+    distribution: zipfian
+
+  - field: critical_vulnerability
+    weight: 30
+    bounds:
+      upper: 2
+    distribution: zipfian
+
+  - field: is_cve
+    weight: 1.5
+    bounds:
+      upper: 1
+    distribution: zipfian
+
+  - field: is_kev
+    weight: 2.5
+    bounds:
+      upper: 1
+    distribution: zipfian
+
+  - field: total_asset
+    weight: 1
+    bounds:
+      upper: 10000
+    distribution: zipfian

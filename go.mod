@@ -16,6 +16,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
+	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/logrusorgru/aurora v2.0.3+incompatible // indirect
 	github.com/mholt/archiver v3.1.1+incompatible // indirect

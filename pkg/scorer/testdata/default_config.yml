@@ -1,0 +1,7 @@
+# Test Data
+
+algorithm: test
+
+inputs:
+  - field: test
+    distribution: linear

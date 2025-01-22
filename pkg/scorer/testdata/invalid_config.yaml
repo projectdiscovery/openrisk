@@ -1,0 +1,8 @@
+# Test Data
+
+This shouldn't work
+  algorithm: test
+  inputs:
+- field: test
+    distribution:
+    linear

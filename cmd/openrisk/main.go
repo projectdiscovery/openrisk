@@ -1,9 +1,7 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
 
 	"github.com/projectdiscovery/goflags"
 	"github.com/projectdiscovery/gologger"
@@ -17,7 +15,7 @@ var banner = fmt.Sprintf(`
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-3)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|
     /_/                                   v%s (experimental)                                          
   `, version)
 
@@ -27,7 +25,8 @@ func printBanner() {
 }
 
 type CliOptions struct {
-	Files goflags.StringSlice
+	ScanFile string
+	Config   string
 }
 
 var cliOptions = CliOptions{}
@@ -35,9 +34,10 @@ var cliOptions = CliOptions{}
 func main() {
 	printBanner()
 	flagSet := goflags.NewFlagSet()
-	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-3 model.`)
+	flagSet.SetDescription(`openrisk is an experimental tool generates a risk score from nuclei output for the asset.`)
 	flagSet.CreateGroup("input", "Input",
-		flagSet.StringSliceVarP(&cliOptions.Files, "files", "f", nil, "Nuclei scan result file or directory path. Supported file extensions: .txt, .md, .jsonl", goflags.CommaSeparatedStringSliceOptions),
+		flagSet.StringVarP(&cliOptions.ScanFile, "scan-file", "sf", "", "Nuclei scan result file (JSON only, required)"),
+		flagSet.StringVarP(&cliOptions.Config, "config", "c", "", "the filename of the config (required)"),
 	)
 
 	if err := flagSet.Parse(); err != nil {
@@ -45,32 +45,23 @@ func main() {
 		return
 	}
 
-	if len(cliOptions.Files) == 0 {
+	if cliOptions.ScanFile == "" {
 		gologger.Fatal().Msgf("no input provided")
 	}
 
-	apiKey, err := getApiKey()
+	if cliOptions.Config == "" {
+		gologger.Fatal().Msgf("no config provided")
+	}
+
+	options := &openrisk.Options{ConfigFile: cliOptions.Config}
+	openRisk, err := openrisk.New(options)
 	if err != nil {
-		gologger.Fatal().Msgf("%s\n", err)
+		gologger.Fatal().Msgf("could not create openrisk: %v", err)
 	}
-	options := &openrisk.Options{ApiKey: apiKey}
-	openRisk, _ := openrisk.New(options)
-
-	for _, file := range cliOptions.Files {
-		issues, err := openRisk.ParseIssuesWithFile(file)
-		if err != nil {
-			gologger.Error().Msgf("Could not parse issues: %v", err)
-		}
-
-		nucleiScan, _ := openRisk.GetScoreWithIssues(issues)
-		gologger.Info().Label("RISK SCORE[" + file + "]").Msg(nucleiScan.Score)
+	signals, err := openrisk.ParseSignals(cliOptions.ScanFile)
+	if err != nil {
+		gologger.Error().Msgf("Could not parse signals: %v", err)
 	}
-}
 
-func getApiKey() (string, error) {
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		return "", errors.New("Environment variable for OPENAI_API_KEY is not set.")
-	}
-	return apiKey, nil
+	gologger.Info().Label("RISK SCORE").Msgf("%.10f", openRisk.Scorer.ScoreRaw(signals))
 }
