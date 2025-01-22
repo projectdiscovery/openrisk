@@ -25,8 +25,9 @@ func printBanner() {
 }
 
 type CliOptions struct {
-	ScanFile string
-	Config   string
+	ScanFile   string
+	Config     string
+	SignalFile string
 }
 
 var cliOptions = CliOptions{}
@@ -38,6 +39,7 @@ func main() {
 	flagSet.CreateGroup("input", "Input",
 		flagSet.StringVarP(&cliOptions.ScanFile, "scan-file", "sf", "", "Nuclei scan result file (JSON only, required)"),
 		flagSet.StringVarP(&cliOptions.Config, "config", "c", "", "the filename of the config"),
+		flagSet.StringVarP(&cliOptions.SignalFile, "signals", "s", "", "the filename of the signals(JSON only)"),
 	)
 
 	if err := flagSet.Parse(); err != nil {
@@ -45,7 +47,7 @@ func main() {
 		return
 	}
 
-	if cliOptions.ScanFile == "" {
+	if cliOptions.ScanFile == "" && cliOptions.SignalFile == "" {
 		gologger.Fatal().Msgf("no input provided")
 	}
 
@@ -54,9 +56,18 @@ func main() {
 	if err != nil {
 		gologger.Fatal().Msgf("could not create openrisk: %v", err)
 	}
-	signals, err := openrisk.ParseSignals(cliOptions.ScanFile)
-	if err != nil {
-		gologger.Error().Msgf("Could not parse signals: %v", err)
+
+	var signals map[string]string
+	if cliOptions.SignalFile != "" {
+		signals, err = openrisk.ParseSignalsFromJson(cliOptions.SignalFile)
+		if err != nil {
+			gologger.Error().Msgf("Could not parse signals from JSON: %v", err)
+		}
+	} else {
+		signals, err = openrisk.ParseSignals(cliOptions.ScanFile)
+		if err != nil {
+			gologger.Error().Msgf("Could not parse signals: %v", err)
+		}
 	}
 
 	gologger.Info().Label("RISK SCORE").Msgf("%.10f", openRisk.Scorer.ScoreRaw(signals))

@@ -43,7 +43,7 @@ inputs:
       upper: 1
     distribution: zipfian
 
-  - field: total_asset
+  - field: total_assets
     weight: 1
     bounds:
       upper: 10000

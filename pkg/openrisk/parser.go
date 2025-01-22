@@ -19,7 +19,6 @@ type Record struct {
 }
 
 type Signals struct {
-	TotalVulnerability    int
 	CriticalVulnerability int
 	HighVulnerability     int
 	MediumVulnerability   int
@@ -27,7 +26,7 @@ type Signals struct {
 	UnknownVulnerability  int
 	IsCVE                 int
 	IsKEV                 int
-	TotalAsset            int
+	TotalAssets           int
 }
 
 func ParseSignals(filePath string) (map[string]string, error) {
@@ -67,7 +66,7 @@ func ParseSignals(filePath string) (map[string]string, error) {
 		}
 
 		if record.Host != "" {
-			signals.TotalAsset++
+			signals.TotalAssets++
 		}
 	}
 
@@ -75,10 +74,7 @@ func ParseSignals(filePath string) (map[string]string, error) {
 		return nil, err
 	}
 
-	signals.TotalVulnerability = signals.CriticalVulnerability + signals.HighVulnerability + signals.MediumVulnerability + signals.LowVulnerability + signals.UnknownVulnerability
-
 	signalsMap := map[string]string{
-		"total_vulnerability":    strconv.Itoa(signals.TotalVulnerability),
 		"critical_vulnerability": strconv.Itoa(signals.CriticalVulnerability),
 		"high_vulnerability":     strconv.Itoa(signals.HighVulnerability),
 		"medium_vulnerability":   strconv.Itoa(signals.MediumVulnerability),
@@ -86,8 +82,47 @@ func ParseSignals(filePath string) (map[string]string, error) {
 		"unknown_vulnerability":  strconv.Itoa(signals.UnknownVulnerability),
 		"total_cve":              strconv.Itoa(signals.IsCVE),
 		"total_kve":              strconv.Itoa(signals.IsKEV),
-		"total_asset":            strconv.Itoa(signals.TotalAsset),
+		"total_assets":           strconv.Itoa(signals.TotalAssets),
 	}
 
 	return signalsMap, nil
+}
+
+type SignalData struct {
+	OpenVulnerability struct {
+		SeverityBreakdown struct {
+			Critical int `json:"critical"`
+			High     int `json:"high"`
+			Medium   int `json:"medium"`
+			Low      int `json:"low"`
+			Unknown  int `json:"unknown"`
+		} `json:"severity_breakdown"`
+		TotalAssets int `json:"total_assets"`
+		IsCVE       int `json:"is_cve,omitempty"`
+		IsKEV       int `json:"is_kev,omitempty"`
+	} `json:"open_vulnerability"`
+}
+
+func ParseSignalsFromJson(filePath string) (map[string]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var data SignalData
+	if err := json.NewDecoder(file).Decode(&data); err != nil {
+		return nil, err
+	}
+
+	return map[string]string{
+		"critical_vulnerability": strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Critical),
+		"high_vulnerability":     strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.High),
+		"medium_vulnerability":   strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Medium),
+		"low_vulnerability":      strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Low),
+		"unknown_vulnerability":  strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Unknown),
+		"total_cve":              strconv.Itoa(data.OpenVulnerability.IsCVE),
+		"total_kve":              strconv.Itoa(data.OpenVulnerability.IsKEV),
+		"total_assets":           strconv.Itoa(data.OpenVulnerability.TotalAssets),
+	}, nil
 }
