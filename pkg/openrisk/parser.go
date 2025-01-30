@@ -81,7 +81,7 @@ func ParseSignals(filePath string) (map[string]string, error) {
 		"low_vulnerability":      strconv.Itoa(signals.LowVulnerability),
 		"unknown_vulnerability":  strconv.Itoa(signals.UnknownVulnerability),
 		"total_cve":              strconv.Itoa(signals.IsCVE),
-		"total_kve":              strconv.Itoa(signals.IsKEV),
+		"total_kev":              strconv.Itoa(signals.IsKEV),
 		"total_assets":           strconv.Itoa(signals.TotalAssets),
 	}
 
@@ -98,8 +98,8 @@ type SignalData struct {
 			Unknown  int `json:"unknown"`
 		} `json:"severity_breakdown"`
 		TotalAssets int `json:"total_assets"`
-		IsCVE       int `json:"is_cve,omitempty"`
-		IsKEV       int `json:"is_kev,omitempty"`
+		IsCVE       int `json:"total_cve,omitempty"`
+		IsKEV       int `json:"total_kev,omitempty"`
 	} `json:"open_vulnerability"`
 }
 
@@ -122,7 +122,7 @@ func ParseSignalsFromJson(filePath string) (map[string]string, error) {
 		"low_vulnerability":      strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Low),
 		"unknown_vulnerability":  strconv.Itoa(data.OpenVulnerability.SeverityBreakdown.Unknown),
 		"total_cve":              strconv.Itoa(data.OpenVulnerability.IsCVE),
-		"total_kve":              strconv.Itoa(data.OpenVulnerability.IsKEV),
+		"total_kev":              strconv.Itoa(data.OpenVulnerability.IsKEV),
 		"total_assets":           strconv.Itoa(data.OpenVulnerability.TotalAssets),
 	}, nil
 }
