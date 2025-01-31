@@ -9,4 +9,5 @@ type OpenRisk struct {
 
 type Options struct {
 	ConfigFile string
+	RawConfig  []byte
 }

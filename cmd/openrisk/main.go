@@ -70,5 +70,5 @@ func main() {
 		}
 	}
 
-	gologger.Info().Label("SECURITY SCORE").Msgf("%.10f", (1 - openRisk.Scorer.ScoreRaw(signals)))
+	gologger.Info().Label("SECURITY SCORE").Msgf("%.10f", 100*(1-openRisk.Scorer.ScoreRaw(signals)))
 }
