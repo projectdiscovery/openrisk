@@ -1,7 +1,6 @@
 package openrisk
 
 import (
-	"bytes"
 	"os"
 
 	"github.com/projectdiscovery/gologger"
@@ -9,11 +8,9 @@ import (
 )
 
 func New(options *Options) (*OpenRisk, error) {
-	var scorer *scorer.Scorer
-	if options.RawConfig != nil {
-		scorer = buildScorerFromRawConfig(options.RawConfig)
-	} else {
-		scorer = buildScorerFromConfigFile(options.ConfigFile)
+	scorer, err := buildScorer(options.ConfigFile)
+	if err != nil {
+		return nil, err
 	}
 
 	openRisk := &OpenRisk{
@@ -24,32 +21,22 @@ func New(options *Options) (*OpenRisk, error) {
 
 }
 
-func buildScorerFromConfigFile(configFlag string) *scorer.Scorer {
+func buildScorer(configFlag string) (*scorer.Scorer, error) {
 	if configFlag == "" {
-		return scorer.FromDefaultConfig()
+		return scorer.FromDefaultConfig(), nil
 	}
 
 	cf, err := os.Open(configFlag)
 	if err != nil {
 		gologger.Error().Msgf("Failed to open config file: %s. Error: %v\n", configFlag, err)
-		os.Exit(2)
+		return nil, err
 	}
 	defer cf.Close()
 
 	s, err := scorer.FromConfig(scorer.NameFromFilepath(configFlag), cf)
 	if err != nil {
 		gologger.Error().Msgf("Failed to build scorer from config file: %s. Error: %v\n", configFlag, err)
-		os.Exit(2)
+		return nil, err
 	}
-	return s
-}
-
-func buildScorerFromRawConfig(rawConfig []byte) *scorer.Scorer {
-	reader := bytes.NewReader(rawConfig)
-	s, err := scorer.FromConfig("raw", reader)
-	if err != nil {
-		gologger.Error().Msgf("Failed to build scorer from raw config. Error: %v\n", err)
-		os.Exit(2)
-	}
-	return s
+	return s, nil
 }
