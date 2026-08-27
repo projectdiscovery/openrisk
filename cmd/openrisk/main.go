@@ -70,7 +70,7 @@ func main() {
 func getApiKey() (string, error) {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
-		return "", errors.New("Environment variable for OPENAI_API_KEY is not set.")
+		return "", errors.New("environment variable for OPENAI_API_KEY is not set")
 	}
 	return apiKey, nil
 }
