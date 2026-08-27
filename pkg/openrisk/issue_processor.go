@@ -32,7 +32,7 @@ func (o *OpenRisk) ParseIssuesWithFile(path string) (string, error) {
 func processFile(path string) (string, error) {
 	nucleiScanResult, err := os.ReadFile(path)
 	if err != nil {
-		return "", fmt.Errorf("Could not read the nuclei scan result: %v", err)
+		return "", fmt.Errorf("could not read the nuclei scan result: %v", err)
 	}
 
 	ext := filepath.Ext(path)
@@ -44,6 +44,6 @@ func processFile(path string) (string, error) {
 	case ".txt":
 		return string(nucleiScanResult), nil
 	default:
-		return "", fmt.Errorf("Unknown file type: %v", path)
+		return "", fmt.Errorf("unknown file type: %v", path)
 	}
 }
