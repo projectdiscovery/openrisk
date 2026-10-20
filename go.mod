@@ -2,6 +2,8 @@ module github.com/projectdiscovery/openrisk
 
 go 1.25.0
 
+toolchain go1.26.10
+
 require (
 	github.com/projectdiscovery/goflags v0.1.76
 	github.com/projectdiscovery/gologger v1.1.72
