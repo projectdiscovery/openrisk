@@ -11,7 +11,7 @@ openrisk는 [nuclei](http://github.com/projectdiscovery/nuclei) 출력 결과(te
 
 ### 설치 방법
 
-openrisk는 설치 시 **go1.20** 이상이 필요합니다. 최신 버전을 설치하려면 다음 명령어를 실행하세요:
+openrisk는 설치 시 **go1.26.10** 이상이 필요합니다. 최신 버전을 설치하려면 다음 명령어를 실행하세요:
 
 ```sh
 go install -v github.com/projectdiscovery/openrisk@latest
