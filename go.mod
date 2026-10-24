@@ -4,7 +4,7 @@ go 1.26.10
 
 require (
 	github.com/projectdiscovery/goflags v0.2.1
-	github.com/projectdiscovery/gologger v1.1.72
+	github.com/projectdiscovery/gologger v1.1.73
 	github.com/sashabaranov/go-openai v1.43.0
 )
 
