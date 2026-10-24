@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . /app
 RUN go mod download && go build ./cmd/openrisk
 
-FROM alpine:3.23.2
+FROM alpine:3.24.2
 RUN apk add --no-cache bind-tools ca-certificates
 COPY --from=build-env /app/openrisk /usr/local/bin/openrisk
 ENTRYPOINT ["openrisk"]
