@@ -18,6 +18,9 @@ func ParseJsonL(nucleiScanResult []byte) (string, error) {
 	// Loop through the lines of the file and parse each row as a JSON object as Nuclei exports the json
 	// file as a JSON-line file
 	scanner := bufio.NewScanner(strings.NewReader(string(nucleiScanResult)))
+	// Nuclei JSONL lines include the raw request and response, which can exceed the default 64 KiB token size.
+	// The whole file is already in memory, so allow a single line to be as long as the file itself.
+	scanner.Buffer(make([]byte, 0, bufio.MaxScanTokenSize), len(nucleiScanResult)+1)
 	for scanner.Scan() {
 		line := scanner.Text()
 		// Set the default and minimally required fields for the NucleiResult struct that are utilized in the result
@@ -35,6 +38,9 @@ func ParseJsonL(nucleiScanResult []byte) (string, error) {
 			continue
 		}
 		results += fmt.Sprintf("%s,%s\n", result.Info.Name, result.Info.Severity)
+	}
+	if err := scanner.Err(); err != nil {
+		errs = append(errs, err)
 	}
 
 	return results, errors.Join(errs...)
