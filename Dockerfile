@@ -1,6 +1,6 @@
 # Pinning apk package versions breaks the build once Alpine drops them; the base image tag is the pin.
 # hadolint global ignore=DL3018
-FROM golang:1.26.10-alpine AS build-env
+FROM golang:1.27.3-alpine AS build-env
 RUN apk add --no-cache build-base git
 WORKDIR /app
 COPY . /app
