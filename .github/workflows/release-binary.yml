@@ -5,23 +5,11 @@ on:
       - 'v*'
   workflow_dispatch:
 
-jobs: 
-  release: 
-    runs-on: ubuntu-latest
-    steps: 
-      - name: "Check out code"
-        uses: actions/checkout@v7
-        with: 
-          fetch-depth: 0
-      
-      - name: "Set up Go"
-        uses: projectdiscovery/actions/setup/go@v1
-      
-      - name: "Create release on GitHub"
-        uses: goreleaser/goreleaser-action@v7
-        with: 
-          args: "release --clean"
-          version: latest
-          workdir: .
-        env: 
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+jobs:
+  release:
+    uses: projectdiscovery/workflows/.github/workflows/goreleaser-publish.yaml@v1
+    permissions:
+      contents: write
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-token: ${{ secrets.DOCKER_TOKEN }}
