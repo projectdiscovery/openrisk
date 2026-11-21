@@ -3,7 +3,7 @@
 <br>
 </h1>
 
-openrisk는 [nuclei](http://github.com/projectdiscovery/nuclei) 출력 결과(text, markdown, JSON)를 읽고 OpenAI의 **GPT-4o 모델**을 사용하여 호스트의 **위험 점수(risk score)** 를 생성하는 실험적 도구입니다. 현재는 **단일 대상(single target)** 에 대해서만 동작하도록 설계되었습니다.
+openrisk는 [nuclei](http://github.com/projectdiscovery/nuclei) 출력 결과(text, markdown, JSON)를 읽고 OpenAI의 **GPT-6 Luna 모델**을 사용하여 호스트의 **위험 점수(risk score)** 를 생성하는 실험적 도구입니다. 현재는 **단일 대상(single target)** 에 대해서만 동작하도록 설계되었습니다.
 
 > **주의**: 이 프로그램은 ProjectDiscovery Research Team에서 실험적으로 배포한 것입니다. 따라서 다른 프로젝트들에 비해 코드 품질이 낮을 수 있으며, 충분히 테스트되지 않았을 수 있습니다. 버그 수정, 기능 개선 아이디어, 다른 도구와의 통합 방안 제안을 환영합니다!
 
@@ -28,11 +28,11 @@ openrisk -h
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-4o)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-6 Luna)
     /_/                                   v0.0.1 (experimental)  
                 projectdiscovery.io
 
- openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-4o model.
+ openrisk is an experimental tool generates a risk score from nuclei output for the host using OpenAI's GPT-6 Luna model.
 
 Usage:
   openrisk [flags]
@@ -62,7 +62,7 @@ openrisk -f nuclei_results.txt
   ____  ____  ___  ____  _____(_)____/ /__
  / __ \/ __ \/ _ \/ __ \/ ___/ / ___/ //_/
 / /_/ / /_/ /  __/ / / / /  / (__  ) ,<   
-\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-4o)
+\____/ .___/\___/_/ /_/_/  /_/____/_/|_|  Powered by OpenAI (GPT-6 Luna)
     /_/                                   v0.0.1 (experimental)                                          
   
     projectdiscovery.io
