@@ -49,7 +49,7 @@ func (o *OpenRisk) makeRequest(req gogpt.ChatCompletionRequest) (gogpt.ChatCompl
 
 func buildRequest(prompt string) gogpt.ChatCompletionRequest {
 	req := gogpt.ChatCompletionRequest{
-		Model:            "gpt-4o",
+		Model:            "gpt-6-luna",
 		Messages:         []gogpt.ChatCompletionMessage{{Role: "system", Content: "You're a security analyst reviewing a host's vulnerabilities."},
 		 {Role: "user", Content: prompt}},
 	}
