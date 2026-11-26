@@ -3,8 +3,8 @@ module github.com/projectdiscovery/openrisk
 go 1.26.10
 
 require (
-	github.com/projectdiscovery/goflags v0.2.1
-	github.com/projectdiscovery/gologger v1.1.76
+	github.com/projectdiscovery/goflags v0.2.2
+	github.com/projectdiscovery/gologger v1.1.77
 	github.com/sashabaranov/go-openai v1.43.0
 )
 
@@ -28,7 +28,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/projectdiscovery/blackrock v0.0.2 // indirect
-	github.com/projectdiscovery/utils v0.11.13 // indirect
+	github.com/projectdiscovery/utils v0.11.14 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/shirou/gopsutil/v4 v4.26.3 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
@@ -38,9 +38,9 @@ require (
 	github.com/tklauser/numcpus v0.11.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
-	golang.org/x/net v0.58.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/term v0.45.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/term v0.46.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
